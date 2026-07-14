@@ -25,3 +25,12 @@ local.properties
 
 # Screenshots
 *.png
+
+# Internal project docs (keep only README.md)
+CHECKPOINT.md
+PRD.md
+PROJECT_STRUCTURE.md
+ROADMAP.md
+SYSTEM_DESIGN.md
+TASKS.md
+UI_UX_SPEC.md
