@@ -163,6 +163,7 @@ private fun SearchResultItem(
   SwipeableItemCard(
     onEdit = onEdit,
     onDelete = onDelete,
+    onTap = onClick,
     modifier = modifier,
   ) {
     Card(

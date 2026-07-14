@@ -116,9 +116,10 @@ private fun AllItemsCard(
   SwipeableItemCard(
     onEdit = onEdit,
     onDelete = onDelete,
+    onTap = onView,
     modifier = modifier,
   ) {
-    ModernCard(modifier = Modifier.fillMaxWidth().clickable { onView() }, shape = RoundedCornerShape(16.dp), elevation = 1.dp) {
+    ModernCard(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), elevation = 1.dp) {
       Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,

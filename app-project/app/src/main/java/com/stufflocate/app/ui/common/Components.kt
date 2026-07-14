@@ -325,6 +325,7 @@ fun CollapsibleSection(
 fun SwipeableItemCard(
   onEdit: () -> Unit,
   onDelete: () -> Unit,
+  onTap: (() -> Unit)? = null,
   modifier: Modifier = Modifier,
   content: @Composable RowScope.() -> Unit,
 ) {
@@ -381,6 +382,12 @@ fun SwipeableItemCard(
     },
     enableDismissFromStartToEnd = true,
     enableDismissFromEndToStart = true,
-    content = content,
+    content = {
+      if (onTap != null) {
+        Row(modifier = Modifier.clickable { onTap() }) { content() }
+      } else {
+        content()
+      }
+    },
   )
 }

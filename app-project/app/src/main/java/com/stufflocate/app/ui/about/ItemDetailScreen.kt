@@ -96,15 +96,16 @@ fun ItemDetailScreen(
             Column(modifier = Modifier.padding(16.dp)) {
               Text("Photos", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, color = primaryColor)
               Spacer(Modifier.height(8.dp))
-              LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                itemsIndexed(currentItem.imagePaths) { index, path ->
+              Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                currentItem.imagePaths.forEachIndexed { index, path ->
                   val file = File(path)
                   if (file.exists()) {
                     Image(
                       painter = rememberAsyncImagePainter(file),
                       contentDescription = "Photo ${index + 1}",
                       modifier = Modifier
-                        .size(120.dp)
+                        .fillMaxWidth()
+                        .height(220.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .clickable { showFullPhoto = path },
                       contentScale = ContentScale.Crop,
@@ -122,15 +123,16 @@ fun ItemDetailScreen(
             Column(modifier = Modifier.padding(16.dp)) {
               Text("Location Photos", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, color = primaryColor)
               Spacer(Modifier.height(8.dp))
-              LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                itemsIndexed(currentItem.locationPhotoPaths) { index, path ->
+              Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                currentItem.locationPhotoPaths.forEachIndexed { index, path ->
                   val file = File(path)
                   if (file.exists()) {
                     Image(
                       painter = rememberAsyncImagePainter(file),
                       contentDescription = "Location photo ${index + 1}",
                       modifier = Modifier
-                        .size(120.dp)
+                        .fillMaxWidth()
+                        .height(220.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .clickable { showFullPhoto = path },
                       contentScale = ContentScale.Crop,
