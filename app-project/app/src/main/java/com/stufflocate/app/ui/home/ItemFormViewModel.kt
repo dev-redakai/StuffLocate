@@ -36,6 +36,7 @@ data class ItemFormUiState(
   val locationPhotoPaths: List<String> = emptyList(),
   val showCameraPreview: Boolean = false,
   val cameraTarget: CameraTarget = CameraTarget.NONE,
+  val saved: Boolean = false,
 )
 
 enum class CameraTarget { NONE, ITEM_PHOTO, LOCATION_PHOTO }
@@ -242,7 +243,7 @@ class ItemFormViewModel(
             )
           }
         }
-        _uiState.value = _uiState.value.copy(isSaving = false)
+        _uiState.value = _uiState.value.copy(isSaving = false, saved = true)
       } catch (_: Exception) {
         _uiState.value = _uiState.value.copy(isSaving = false)
       }

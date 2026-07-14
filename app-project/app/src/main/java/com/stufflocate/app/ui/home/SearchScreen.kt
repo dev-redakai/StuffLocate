@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import coil.compose.rememberAsyncImagePainter
 import com.stufflocate.app.EditItem
+import com.stufflocate.app.ViewItem
 import com.stufflocate.app.RoomDetail
 import com.stufflocate.app.di.ServiceLocator
 import com.stufflocate.app.domain.model.Categories
@@ -137,7 +138,7 @@ fun SearchScreen(
             items(state.results, key = { it.item.id }) { result ->
               SearchResultItem(
                 result = result,
-                onClick = { onNavigate(RoomDetail(result.roomId, result.roomName, result.floorId)) },
+                onClick = { onNavigate(ViewItem(result.item.id, result.roomId)) },
                 onEdit = { onNavigate(EditItem(result.item.id, result.roomId)) },
                 onDelete = { viewModel.deleteItem(result.item.id) },
                 onStatusChange = { viewModel.updateItemStatus(result.item.id, it) },

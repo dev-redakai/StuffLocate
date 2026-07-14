@@ -15,6 +15,7 @@ import kotlinx.serialization.Serializable
 @Serializable data class CreateRoom(val floorId: String, val homeId: String) : NavKey
 @Serializable data class CreateItem(val roomId: String, val roomName: String) : NavKey
 @Serializable data class EditItem(val itemId: String, val roomId: String) : NavKey
+@Serializable data class ViewItem(val itemId: String, val roomId: String) : NavKey
 @Serializable data class Search(val dummy: String = "search") : NavKey
 @Serializable data class Settings(val dummy: String = "settings") : NavKey
 @Serializable data class AllItems(val dummy: String = "all_items") : NavKey

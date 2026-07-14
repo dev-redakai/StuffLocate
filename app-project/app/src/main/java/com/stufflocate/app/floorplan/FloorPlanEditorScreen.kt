@@ -26,6 +26,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.stufflocate.app.ui.common.IOSColors
+import kotlinx.coroutines.launch
 import kotlin.math.sqrt
 
 enum class EditorTool {
@@ -35,11 +36,21 @@ enum class EditorTool {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FloorPlanEditorScreen(
+  floorId: String,
   onBack: () -> Unit,
   onSaved: (FloorPlan) -> Unit,
   onView3D: (FloorPlan) -> Unit = {},
 ) {
+  val scope = rememberCoroutineScope()
   var floorPlan by remember { mutableStateOf(FloorPlan(width = 10f, height = 8f)) }
+  var isLoaded by remember { mutableStateOf(false) }
+  var isSaving by remember { mutableStateOf(false) }
+
+  LaunchedEffect(floorId) {
+    val saved = com.stufflocate.app.di.ServiceLocator.getRepository().getFloorPlan(floorId)
+    if (saved != null) floorPlan = saved
+    isLoaded = true
+  }
   var activeTool by remember { mutableStateOf(EditorTool.WALL) }
   var wallStart by remember { mutableStateOf<Point2D?>(null) }
   var previewEnd by remember { mutableStateOf<Point2D?>(null) }
@@ -64,8 +75,16 @@ fun FloorPlanEditorScreen(
           TextButton(onClick = { onView3D(floorPlan) }) {
             Text("3D", color = IOSColors.Secondary, fontWeight = FontWeight.Bold)
           }
-          TextButton(onClick = { onSaved(floorPlan) }) {
-            Text("Save", color = IOSColors.Primary, fontWeight = FontWeight.Bold)
+          TextButton(onClick = {
+            isSaving = true
+            scope.launch {
+              val plan = floorPlan.copy(id = floorId.ifBlank { floorPlan.id })
+              com.stufflocate.app.di.ServiceLocator.getRepository().saveFloorPlan(floorId, plan)
+              isSaving = false
+              onSaved(plan)
+            }
+          }, enabled = !isSaving) {
+            Text(if (isSaving) "Saving..." else "Save", color = IOSColors.Primary, fontWeight = FontWeight.Bold)
           }
         },
       )
@@ -75,7 +94,9 @@ fun FloorPlanEditorScreen(
         activeTool = activeTool,
         onToolChange = { activeTool = it },
         onUndo = {
-          if (floorPlan.walls.isNotEmpty()) {
+          if (floorPlan.rooms.isNotEmpty()) {
+            floorPlan = floorPlan.copy(rooms = floorPlan.rooms.dropLast(1))
+          } else if (floorPlan.walls.isNotEmpty()) {
             floorPlan = floorPlan.copy(walls = floorPlan.walls.dropLast(1))
           }
         },
@@ -88,6 +109,11 @@ fun FloorPlanEditorScreen(
     Box(
       modifier = Modifier.fillMaxSize().padding(padding).background(Color(0xFFF8F9FA)),
     ) {
+      if (!isLoaded) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+          CircularProgressIndicator(color = IOSColors.Primary)
+        }
+      } else {
       FloorPlanCanvas(
         floorPlan = floorPlan,
         activeTool = activeTool,
@@ -173,6 +199,7 @@ fun FloorPlanEditorScreen(
           modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
         )
       }
+      } // end if (isLoaded)
     }
   }
 
@@ -180,7 +207,7 @@ fun FloorPlanEditorScreen(
   if (showRoomDialog) {
     val roomTypes = listOf("BEDROOM", "KITCHEN", "LIVING", "BATHROOM", "OFFICE", "GARAGE", "STORAGE", "OTHER")
     AlertDialog(
-      onDismissRequest = { showRoomDialog = false; pendingRoomPolygon = emptyList() },
+      onDismissRequest = { showRoomDialog = false; pendingRoomPolygon = emptyList(); pendingRoomName = ""; pendingRoomType = "OTHER" },
       containerColor = MaterialTheme.colorScheme.surface,
       shape = RoundedCornerShape(20.dp),
       title = { Text("Create Room", fontWeight = FontWeight.Bold) },
@@ -245,27 +272,29 @@ private fun FloorPlanCanvas(
   val previewColor = IOSColors.Primary.copy(alpha = 0.5f)
 
   Canvas(
-    modifier = Modifier.fillMaxSize().pointerInput(activeTool) {
-      detectTapGestures { offset ->
-        val point = screenToFloor(offset, gridSize, size.width.toFloat(), size.height.toFloat())
-        val snapped = snapToGrid(point, gridSize)
-        when (activeTool) {
-          EditorTool.WALL -> {
-            if (wallStart == null) onWallStart(snapped) else onWallEnd(snapped)
+    modifier = Modifier.fillMaxSize()
+      .pointerInput(activeTool, wallStart) {
+        detectTapGestures { offset ->
+          val point = screenToFloor(offset, gridSize, size.width.toFloat(), size.height.toFloat())
+          val snapped = snapToGrid(point, gridSize)
+          when (activeTool) {
+            EditorTool.WALL -> {
+              if (wallStart == null) onWallStart(snapped) else onWallEnd(snapped)
+            }
+            EditorTool.RECT_ROOM, EditorTool.LROOM -> onRectPoint(snapped)
+            else -> {}
           }
-          EditorTool.RECT_ROOM, EditorTool.LROOM -> onRectPoint(snapped)
-          else -> {}
         }
       }
-    }.pointerInput(activeTool) {
-      if (activeTool == EditorTool.WALL && wallStart != null) {
-        detectDragGestures { change, _ ->
-          change.consume()
-          val point = screenToFloor(change.position, gridSize, size.width.toFloat(), size.height.toFloat())
-          onPreviewPoint(snapToGrid(point, gridSize))
+      .pointerInput(activeTool) {
+        if (activeTool == EditorTool.WALL) {
+          detectDragGestures { change, _ ->
+            change.consume()
+            val point = screenToFloor(change.position, gridSize, size.width.toFloat(), size.height.toFloat())
+            onPreviewPoint(snapToGrid(point, gridSize))
+          }
         }
-      }
-    },
+      },
   ) {
     val canvasWidth = size.width
     val canvasHeight = size.height

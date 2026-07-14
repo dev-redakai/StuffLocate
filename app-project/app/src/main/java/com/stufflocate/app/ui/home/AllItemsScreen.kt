@@ -1,5 +1,6 @@
 package com.stufflocate.app.ui.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,6 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import com.stufflocate.app.EditItem
+import com.stufflocate.app.ViewItem
 import com.stufflocate.app.di.ServiceLocator
 import com.stufflocate.app.domain.model.Item
 import com.stufflocate.app.ui.common.EmptyStateView
@@ -88,6 +90,7 @@ fun AllItemsScreen(
             items(state.items, key = { it.id }) { item ->
               AllItemsCard(
                 item = item,
+                onView = { onNavigate(ViewItem(item.id, item.roomId)) },
                 onEdit = { onNavigate(EditItem(item.id, item.roomId)) },
                 onDelete = { viewModel.deleteItem(item.id) },
                 onStatusChange = { viewModel.updateItemStatus(item.id, it) },
@@ -104,6 +107,7 @@ fun AllItemsScreen(
 @Composable
 private fun AllItemsCard(
   item: Item,
+  onView: () -> Unit = {},
   onEdit: () -> Unit = {},
   onDelete: () -> Unit = {},
   onStatusChange: (ItemStatus) -> Unit = {},
@@ -114,7 +118,7 @@ private fun AllItemsCard(
     onDelete = onDelete,
     modifier = modifier,
   ) {
-    ModernCard(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), elevation = 1.dp) {
+    ModernCard(modifier = Modifier.fillMaxWidth().clickable { onView() }, shape = RoundedCornerShape(16.dp), elevation = 1.dp) {
       Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,

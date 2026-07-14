@@ -22,6 +22,8 @@ interface DataRepository {
   suspend fun createFloor(homeId: String, name: String, floorNumber: Int): Floor
   suspend fun updateFloor(floor: Floor)
   suspend fun deleteFloor(floorId: String)
+  suspend fun getFloorPlan(floorId: String): com.stufflocate.app.floorplan.FloorPlan?
+  suspend fun saveFloorPlan(floorId: String, floorPlan: com.stufflocate.app.floorplan.FloorPlan)
 
   // Rooms
   suspend fun getRoomsForFloor(floorId: String): List<RoomModel>
@@ -31,6 +33,7 @@ interface DataRepository {
 
   // Items
   val allItems: Flow<List<Item>>
+  fun itemsForRoom(roomId: String): Flow<List<Item>>
   suspend fun getItemsForRoom(roomId: String): List<Item>
   suspend fun createItem(
     roomId: String,

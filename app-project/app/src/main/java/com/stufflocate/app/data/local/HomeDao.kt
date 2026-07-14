@@ -42,6 +42,12 @@ interface HomeDao {
   @Query("SELECT * FROM floors WHERE homeId = :homeId")
   fun getFloorsForHome(homeId: String): Flow<List<FloorEntity>>
 
+  @Query("SELECT * FROM floors WHERE id = :floorId")
+  suspend fun getFloorById(floorId: String): FloorEntity?
+
+  @Query("UPDATE floors SET floorPlanJson = :json WHERE id = :floorId")
+  suspend fun updateFloorPlan(floorId: String, json: String?)
+
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insertFloor(floor: FloorEntity)
 
@@ -77,6 +83,9 @@ interface HomeDao {
   // ───── Items ─────
   @Query("SELECT * FROM items ORDER BY name ASC")
   fun getAllItems(): Flow<List<ItemEntity>>
+
+  @Query("SELECT * FROM items WHERE roomId = :roomId ORDER BY name ASC")
+  fun getItemsForRoom(roomId: String): Flow<List<ItemEntity>>
 
   @Query("SELECT * FROM items WHERE roomId = :roomId ORDER BY name ASC")
   suspend fun getItemsForRoomSync(roomId: String): List<ItemEntity>

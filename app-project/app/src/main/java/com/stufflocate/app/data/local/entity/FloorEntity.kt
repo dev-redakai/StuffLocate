@@ -23,4 +23,5 @@ data class FloorEntity(
   val floorNumber: Int,
   val order: Int,
   val type: String,
+  val floorPlanJson: String? = null,
 )

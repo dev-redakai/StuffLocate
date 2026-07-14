@@ -81,7 +81,10 @@ fun HomeDetailScreen(
               Icon(Icons.Default.Edit, contentDescription = "Edit Home",
                 tint = IOSColors.Primary)
             }
-            IconButton(onClick = { onNavigate(FloorPlanEditor(homeId, homeId)) }) {
+            IconButton(onClick = {
+              val floorId = home?.floors?.firstOrNull()?.id ?: return@IconButton
+              onNavigate(FloorPlanEditor(floorId, homeId))
+            }) {
               Icon(Icons.Default.Draw, contentDescription = "Draw Floor Plan",
                 tint = IOSColors.Secondary)
             }

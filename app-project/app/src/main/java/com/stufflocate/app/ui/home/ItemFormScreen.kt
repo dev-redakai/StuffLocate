@@ -60,6 +60,8 @@ fun ItemFormScreen(
   val isEditing = editItemId != null
   var showRoomPicker by remember { mutableStateOf(false) }
 
+  LaunchedEffect(state.saved) { if (state.saved) onSaved() }
+
   val galleryLauncher = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.GetContent()
   ) { uri: Uri? ->
@@ -279,7 +281,7 @@ fun ItemFormScreen(
       Spacer(Modifier.height(4.dp))
 
       Button(
-        onClick = { viewModel.save(); onSaved() },
+        onClick = { viewModel.save() },
         modifier = Modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(14.dp),
         enabled = state.name.isNotBlank(),

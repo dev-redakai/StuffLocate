@@ -8,6 +8,8 @@ import com.stufflocate.app.domain.model.ItemStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 data class RoomDetailUiState(
@@ -23,23 +25,24 @@ class RoomDetailViewModel(
   private val _uiState = MutableStateFlow(RoomDetailUiState())
   val uiState: StateFlow<RoomDetailUiState> = _uiState.asStateFlow()
 
+  private var currentRoomId: String? = null
+
   fun loadItems(roomId: String) {
-    viewModelScope.launch {
-      _uiState.value = _uiState.value.copy(isLoading = true)
-      try {
-        val items = repository.getItemsForRoom(roomId)
+    if (roomId == currentRoomId && !_uiState.value.isLoading) return
+    currentRoomId = roomId
+    _uiState.value = RoomDetailUiState(isLoading = true)
+
+    repository.itemsForRoom(roomId)
+      .onEach { items ->
         _uiState.value = RoomDetailUiState(isLoading = false, items = items)
-      } catch (e: Exception) {
-        _uiState.value = RoomDetailUiState(isLoading = false, error = e)
       }
-    }
+      .launchIn(viewModelScope)
   }
 
   fun deleteItem(itemId: String, roomId: String) {
     viewModelScope.launch {
       try {
         repository.deleteItem(itemId)
-        loadItems(roomId)
       } catch (_: Exception) { }
     }
   }
@@ -49,9 +52,6 @@ class RoomDetailViewModel(
       try {
         val item = repository.getItemById(itemId) ?: return@launch
         repository.updateItem(item.copy(status = newStatus))
-        // Refresh the list to show updated status
-        val currentRoomId = _uiState.value.items.firstOrNull()?.roomId ?: return@launch
-        loadItems(currentRoomId)
       } catch (_: Exception) { }
     }
   }

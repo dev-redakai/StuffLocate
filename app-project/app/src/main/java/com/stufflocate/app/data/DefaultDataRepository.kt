@@ -138,6 +138,20 @@ class DefaultDataRepository(
     homeDao.deleteFloor(FloorEntity(id = floorId, homeId = "", name = "", floorNumber = 0, order = 0, type = ""))
   }
 
+  override suspend fun getFloorPlan(floorId: String): com.stufflocate.app.floorplan.FloorPlan? {
+    val json = homeDao.getFloorById(floorId)?.floorPlanJson ?: return null
+    return try {
+      kotlinx.serialization.json.Json.decodeFromString<com.stufflocate.app.floorplan.FloorPlan>(json)
+    } catch (_: Exception) { null }
+  }
+
+  override suspend fun saveFloorPlan(floorId: String, floorPlan: com.stufflocate.app.floorplan.FloorPlan) {
+    val json = kotlinx.serialization.json.Json.encodeToString(
+      com.stufflocate.app.floorplan.FloorPlan.serializer(), floorPlan
+    )
+    homeDao.updateFloorPlan(floorId, json)
+  }
+
   // ───── Rooms ─────
 
   override suspend fun getRoomsForFloor(floorId: String): List<RoomModel> =
@@ -171,6 +185,9 @@ class DefaultDataRepository(
 
   override val allItems: Flow<List<Item>> =
     homeDao.getAllItems().map { entities -> entities.map { it.toDomain() } }
+
+  override fun itemsForRoom(roomId: String): Flow<List<Item>> =
+    homeDao.getItemsForRoom(roomId).map { entities -> entities.map { it.toDomain() } }
 
   override suspend fun getItemsForRoom(roomId: String): List<Item> =
     homeDao.getItemsForRoomSync(roomId).map { it.toDomain() }

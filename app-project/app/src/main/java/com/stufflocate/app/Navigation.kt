@@ -18,6 +18,7 @@ import com.stufflocate.app.ui.home.RoomDetailScreen
 import com.stufflocate.app.ui.home.RoomEditScreen
 import com.stufflocate.app.ui.home.SearchScreen
 import com.stufflocate.app.ui.about.AboutScreen
+import com.stufflocate.app.ui.about.ItemDetailScreen
 import com.stufflocate.app.ui.main.MainScreen
 import com.stufflocate.app.ui.settings.SettingsScreen
 import com.stufflocate.app.floorplan.FloorPlan
@@ -120,6 +121,15 @@ fun MainNavigation() {
           )
         }
 
+        entry<ViewItem> {
+          ItemDetailScreen(
+            itemId = it.itemId,
+            roomId = it.roomId,
+            onBack = { backStack.removeLastOrNull() },
+            onEdit = { editKey -> backStack.add(editKey) },
+          )
+        }
+
         entry<EditItem> {
           ItemFormScreen(
             roomId = it.roomId,
@@ -161,6 +171,7 @@ fun MainNavigation() {
 
         entry<FloorPlanEditor> {
           FloorPlanEditorScreen(
+            floorId = it.floorId,
             onBack = { backStack.removeLastOrNull() },
             onSaved = { backStack.removeLastOrNull() },
             onView3D = { floorPlan ->
@@ -171,7 +182,7 @@ fun MainNavigation() {
 
         entry<ThreeDView> {
           ThreeDFloorPlanScreen(
-            floorPlan = FloorPlan(),
+            floorId = it.floorId,
             onBack = { backStack.removeLastOrNull() },
           )
         }

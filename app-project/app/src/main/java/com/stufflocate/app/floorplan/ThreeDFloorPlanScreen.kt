@@ -28,9 +28,14 @@ import kotlin.math.sin
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThreeDFloorPlanScreen(
-  floorPlan: FloorPlan,
+  floorId: String,
   onBack: () -> Unit,
 ) {
+  var floorPlan by remember { mutableStateOf(FloorPlan()) }
+  LaunchedEffect(floorId) {
+    val loaded = com.stufflocate.app.di.ServiceLocator.getRepository().getFloorPlan(floorId)
+    if (loaded != null) floorPlan = loaded
+  }
   var cameraAngle by remember { mutableFloatStateOf(45f) }
   var cameraElevation by remember { mutableFloatStateOf(30f) }
   var zoom by remember { mutableFloatStateOf(1f) }
