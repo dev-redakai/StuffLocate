@@ -81,13 +81,14 @@ kotlin {
 }
 
 // ─── Rename APKs after build ────────────────────────────────────
+val apkVersion = "1.0"
 gradle.buildFinished {
     listOf("debug", "release").forEach { variant ->
         val apkDir = file("build/outputs/apk/$variant")
         if (!apkDir.exists()) return@forEach
-        apkDir.listFiles { f -> f.name.endsWith(".apk") && f.name.startsWith("app-") }?.forEach { apk ->
-            val newName = apk.name.replace("app-", "StuffLocate-")
-            if (apk.renameTo(apkDir.resolve(newName))) {
+        apkDir.listFiles { f -> f.name.endsWith(".apk") }?.forEach { apk ->
+            val newName = "StuffLocate-v${apkVersion}-${variant}.apk"
+            if (apk.name != newName && apk.renameTo(apkDir.resolve(newName))) {
                 logger.lifecycle("APK renamed: ${apk.name} -> $newName")
             }
         }

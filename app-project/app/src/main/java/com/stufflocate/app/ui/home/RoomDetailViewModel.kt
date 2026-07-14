@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.stufflocate.app.data.DataRepository
 import com.stufflocate.app.domain.model.Item
 import com.stufflocate.app.domain.model.ItemStatus
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,14 +26,13 @@ class RoomDetailViewModel(
   private val _uiState = MutableStateFlow(RoomDetailUiState())
   val uiState: StateFlow<RoomDetailUiState> = _uiState.asStateFlow()
 
-  private var currentRoomId: String? = null
+  private var itemsJob: Job? = null
 
   fun loadItems(roomId: String) {
-    if (roomId == currentRoomId && !_uiState.value.isLoading) return
-    currentRoomId = roomId
+    itemsJob?.cancel()
     _uiState.value = RoomDetailUiState(isLoading = true)
 
-    repository.itemsForRoom(roomId)
+    itemsJob = repository.itemsForRoom(roomId)
       .onEach { items ->
         _uiState.value = RoomDetailUiState(isLoading = false, items = items)
       }
