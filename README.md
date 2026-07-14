@@ -79,12 +79,6 @@ Stuff_locate/
 │   │   │   └── common/       # Shared UI components
 │   │   └── Navigation.kt     # 24-screen Navigation3 graph
 │   └── build.gradle.kts
-├── CHECKPOINT.md
-├── PRD.md
-├── ROADMAP.md
-├── SYSTEM_DESIGN.md
-├── TASKS.md
-├── UI_UX_SPEC.md
 └── LICENSE
 ```
 
