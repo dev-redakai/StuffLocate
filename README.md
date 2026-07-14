@@ -17,9 +17,9 @@ A smart Android home storage organizer that helps you catalog, photograph, and l
 
 ## Screenshots
 
-| Dashboard | Floor Plan | 3D View | Themes |
-|-----------|-----------|---------|--------|
-| ![Dashboard](app-project/screenshot_main.png) | | | |
+| Dashboard | Drawer | Search | Home Detail |
+|-----------|--------|--------|-------------|
+| ![Dashboard](screenshots/dashboard.png) | ![Drawer](screenshots/drawer.png) | ![Search](screenshots/search.png) | ![Home Detail](screenshots/home_detail.png) |
 
 ## Tech Stack
 

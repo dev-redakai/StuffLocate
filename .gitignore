@@ -23,8 +23,8 @@ local.properties
 **/*.jks
 **/*.keystore
 
-# Screenshots
-*.png
+# Screenshots (keep screenshots/ folder for README)
+app-project/*.png
 
 # Internal project docs (keep only README.md)
 CHECKPOINT.md
