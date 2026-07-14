@@ -1,0 +1,27 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# AI assistants
+.codemie/
+
+# Build outputs
+**/build/
+.gradle/
+.kotlin/
+
+# Local config
+local.properties
+
+# Signing (NEVER commit)
+**/keystore.properties
+**/*.jks
+**/*.keystore
+
+# Screenshots
+*.png

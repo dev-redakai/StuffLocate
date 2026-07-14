@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Adaptive icons use a 108dp canvas but only the center 72dp is guaranteed visible.
+     This inset adds 18dp padding on each side to keep the icon content in the safe zone. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/app_icon"
+    android:inset="18dp" />
