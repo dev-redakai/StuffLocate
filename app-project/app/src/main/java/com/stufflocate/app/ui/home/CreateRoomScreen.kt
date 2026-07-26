@@ -36,6 +36,8 @@ fun CreateRoomScreen(
 ) {
   val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+  LaunchedEffect(state.saved) { if (state.saved) onSaved() }
+
   Scaffold(
     topBar = {
       TopAppBar(
@@ -116,7 +118,7 @@ fun CreateRoomScreen(
       Spacer(Modifier.weight(1f))
 
       Button(
-        onClick = { viewModel.save(floorId); onSaved() },
+        onClick = { viewModel.save(floorId) },
         modifier = Modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(14.dp),
         enabled = state.name.isNotBlank(),

@@ -12,6 +12,7 @@ data class CreateRoomUiState(
   val name: String = "",
   val type: String? = null,
   val isSaving: Boolean = false,
+  val saved: Boolean = false,
 )
 
 class CreateRoomViewModel(
@@ -32,7 +33,10 @@ class CreateRoomViewModel(
       _uiState.value = state.copy(isSaving = true)
       try {
         repository.createRoom(floorId, state.name, state.type)
-      } catch (_: Exception) { }
+        _uiState.value = _uiState.value.copy(isSaving = false, saved = true)
+      } catch (_: Exception) {
+        _uiState.value = _uiState.value.copy(isSaving = false)
+      }
     }
   }
 }

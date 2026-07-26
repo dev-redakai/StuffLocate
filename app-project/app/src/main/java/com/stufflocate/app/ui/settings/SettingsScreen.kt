@@ -56,6 +56,21 @@ fun SettingsScreen(
     }
   }
 
+  LaunchedEffect(state.shouldShare, state.exportedData) {
+    if (state.shouldShare && state.exportedData.isNotBlank()) {
+      context.startActivity(
+        Intent.createChooser(
+          Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, state.exportedData)
+            putExtra(Intent.EXTRA_SUBJECT, "Stuff Locate - Home Inventory")
+          }, "Share Inventory"
+        )
+      )
+      viewModel.clearShareFlag()
+    }
+  }
+
   Scaffold(
     containerColor = backgroundColor,
     topBar = {
@@ -180,15 +195,6 @@ fun SettingsScreen(
           theme = currentTheme,
           onClick = {
             viewModel.exportAllHomes()
-            context.startActivity(
-              Intent.createChooser(
-                Intent(Intent.ACTION_SEND).apply {
-                  type = "text/plain"
-                  putExtra(Intent.EXTRA_TEXT, state.exportedData)
-                  putExtra(Intent.EXTRA_SUBJECT, "Stuff Locate - Home Inventory")
-                }, "Share Inventory"
-              )
-            )
           },
         )
         HorizontalDivider(

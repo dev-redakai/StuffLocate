@@ -26,6 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.stufflocate.app.ui.common.IOSColors
@@ -113,23 +114,40 @@ fun FurniturePlacementScreen(
         .fillMaxSize()
         .padding(padding)
         .background(Color(0xFFF0F2F5))
-        .clickable {
-          if (selectedFurnitureIndex < 0) {
-            val updatedFurniture = currentRoom.furniture.toMutableList() + FurniturePlacement(
-              id = java.util.UUID.randomUUID().toString(),
-              type = selectedFurnitureType.type,
-              name = selectedFurnitureType.displayName,
-              position = Point2D(2f, 2f),
-              width = selectedFurnitureType.defaultWidth,
-              depth = selectedFurnitureType.defaultDepth,
-              height = selectedFurnitureType.defaultHeight,
-              slots = selectedFurnitureType.slots,
-            )
-            val updatedRoom = currentRoom.copy(furniture = updatedFurniture)
-            val updatedRooms = currentFloorPlan.rooms.toMutableList()
-            updatedRooms[roomIndex] = updatedRoom
-            currentFloorPlan = currentFloorPlan.copy(rooms = updatedRooms)
-            selectedFurnitureIndex = updatedFurniture.lastIndex
+        .pointerInput(Unit) {
+          awaitPointerEventScope {
+            while (true) {
+              val event = awaitPointerEvent()
+              val down = event.changes.firstOrNull { it.pressed }
+              if (down != null && down.pressed && selectedFurnitureIndex < 0) {
+                val tapX = down.position.x
+                val tapY = down.position.y
+                val canvasW = size.width.toFloat()
+                val canvasH = size.height.toFloat()
+                val scl = minOf(canvasW, canvasH) / 10f
+                val offX = canvasW * 0.1f
+                val offZ = canvasH * 0.1f
+                val fx = ((tapX - offX) / scl).coerceIn(0.5f, 7.5f)
+                val fz = ((tapY - offZ) / scl).coerceIn(0.5f, 7.5f)
+
+                val updatedFurniture = currentRoom.furniture.toMutableList() + FurniturePlacement(
+                  id = java.util.UUID.randomUUID().toString(),
+                  type = selectedFurnitureType.type,
+                  name = selectedFurnitureType.displayName,
+                  position = Point2D(fx, fz),
+                  width = selectedFurnitureType.defaultWidth,
+                  depth = selectedFurnitureType.defaultDepth,
+                  height = selectedFurnitureType.defaultHeight,
+                  slots = selectedFurnitureType.slots,
+                )
+                val updatedRoom = currentRoom.copy(furniture = updatedFurniture)
+                val updatedRooms = currentFloorPlan.rooms.toMutableList()
+                updatedRooms[roomIndex] = updatedRoom
+                currentFloorPlan = currentFloorPlan.copy(rooms = updatedRooms)
+                selectedFurnitureIndex = updatedFurniture.lastIndex
+                down.consume()
+              }
+            }
           }
         },
     ) {

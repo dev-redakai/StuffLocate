@@ -65,13 +65,13 @@ fun ThemeEditorScreen(
               name = themeName,
               isDark = isDark,
               colors = ThemeColors(
-                primary = primaryColor.hashCode().toLong(),
-                secondary = secondaryColor.hashCode().toLong(),
-                tertiary = tertiaryColor.hashCode().toLong(),
-                background = backgroundColor.hashCode().toLong(),
-                surface = surfaceColor.hashCode().toLong(),
-                surfaceVariant = backgroundColor.hashCode().toLong(),
-                error = errorColor.hashCode().toLong(),
+                primary = primaryColor.value.toLong(),
+                secondary = secondaryColor.value.toLong(),
+                tertiary = tertiaryColor.value.toLong(),
+                background = backgroundColor.value.toLong(),
+                surface = surfaceColor.value.toLong(),
+                surfaceVariant = backgroundColor.value.toLong(),
+                error = errorColor.value.toLong(),
               ),
               glass = GlassConfig(
                 style = glassStyle,
@@ -210,10 +210,10 @@ fun ThemeEditorScreen(
             modifier = Modifier.weight(1f),
             theme = AppTheme(
               colors = ThemeColors(
-                primary = primaryColor.hashCode().toLong(),
-                secondary = secondaryColor.hashCode().toLong(),
-                background = backgroundColor.hashCode().toLong(),
-                surface = surfaceColor.hashCode().toLong(),
+                primary = primaryColor.value.toLong(),
+                secondary = secondaryColor.value.toLong(),
+                background = backgroundColor.value.toLong(),
+                surface = surfaceColor.value.toLong(),
               ),
               glass = GlassConfig(
                 style = glassStyle,
@@ -247,7 +247,7 @@ fun ThemeEditorScreen(
               onClick = {},
               modifier = Modifier.fillMaxWidth(),
               theme = AppTheme(
-                colors = ThemeColors(primary = primaryColor.hashCode().toLong()),
+                colors = ThemeColors(primary = primaryColor.value.toLong()),
                 glass = GlassConfig(style = glassStyle),
               ),
               style = ButtonStyle.FILLED,
@@ -258,8 +258,8 @@ fun ThemeEditorScreen(
               modifier = Modifier.fillMaxWidth(),
               theme = AppTheme(
                 colors = ThemeColors(
-                  primary = primaryColor.hashCode().toLong(),
-                  surface = surfaceColor.hashCode().toLong(),
+                  primary = primaryColor.value.toLong(),
+                  surface = surfaceColor.value.toLong(),
                 ),
                 glass = GlassConfig(style = glassStyle, alpha = glassAlpha),
               ),
@@ -335,14 +335,16 @@ private fun GlassStyleChip(
     GlassStyle.MINIMAL -> "Minimal"
   }
 
+  val primaryThemeColor = Color(LocalAppTheme.current.colors.primary)
+
   Surface(
     onClick = onClick,
     shape = RoundedCornerShape(12.dp),
-    color = if (selected) Color(0xFF5B5FFF).copy(alpha = 0.15f) else Color(0xFFF0F2F5),
+    color = if (selected) primaryThemeColor.copy(alpha = 0.15f) else Color(LocalAppTheme.current.colors.surfaceVariant).copy(alpha = 0.5f),
     border = if (selected) {
       ButtonDefaults.outlinedButtonBorder(enabled = true).copy(
         brush = androidx.compose.ui.graphics.Brush.linearGradient(
-          colors = listOf(Color(0xFF5B5FFF).copy(alpha = 0.5f), Color(0xFF5B5FFF).copy(alpha = 0.3f))
+          colors = listOf(primaryThemeColor.copy(alpha = 0.5f), primaryThemeColor.copy(alpha = 0.3f))
         )
       )
     } else ButtonDefaults.outlinedButtonBorder(enabled = true),
@@ -352,7 +354,7 @@ private fun GlassStyleChip(
       modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
       style = MaterialTheme.typography.labelMedium,
       fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-      color = if (selected) Color(0xFF5B5FFF) else Color(0xFF1A1C1E),
+      color = if (selected) primaryThemeColor else Color(LocalAppTheme.current.colors.onSurface),
     )
   }
 }
@@ -377,8 +379,8 @@ private fun SliderParameter(
       onValueChange = onValueChange,
       valueRange = range,
       colors = SliderDefaults.colors(
-        thumbColor = Color(0xFF5B5FFF),
-        activeTrackColor = Color(0xFF5B5FFF),
+        thumbColor = Color(LocalAppTheme.current.colors.primary),
+        activeTrackColor = Color(LocalAppTheme.current.colors.primary),
       ),
     )
   }
@@ -401,7 +403,7 @@ fun ColorPickerDialog(
 
   AlertDialog(
     onDismissRequest = onDismiss,
-    containerColor = Color(0xFFFFFFFF),
+    containerColor = Color(LocalAppTheme.current.colors.surface),
     shape = RoundedCornerShape(28.dp),
     title = { Text("Pick Color", fontWeight = FontWeight.Bold) },
     text = {
@@ -445,7 +447,7 @@ fun ColorPickerDialog(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Hex input
-        var hexInput by remember { mutableStateOf(String.format("#%06X", 0xFFFFFF and color.hashCode())) }
+        var hexInput by remember { mutableStateOf(String.format("#%06X", 0xFFFFFF and color.value.toInt())) }
         LiquidGlassTextField(
           value = hexInput,
           onValueChange = { hex ->

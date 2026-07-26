@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 data class SettingsUiState(
   val exportedData: String = "",
   val isExporting: Boolean = false,
+  val shouldShare: Boolean = false,
   val importMessage: String? = null,
 )
 
@@ -39,7 +40,7 @@ class SettingsViewModel(
           }
         }
         val json = ShareDataMapper.homesToJson(homes, allRoomItems)
-        _uiState.value = _uiState.value.copy(exportedData = json, isExporting = false)
+        _uiState.value = _uiState.value.copy(exportedData = json, isExporting = false, shouldShare = true)
       } catch (_: Exception) {
         _uiState.value = _uiState.value.copy(isExporting = false)
       }
@@ -86,5 +87,9 @@ class SettingsViewModel(
 
   fun clearImportMessage() {
     _uiState.value = _uiState.value.copy(importMessage = null)
+  }
+
+  fun clearShareFlag() {
+    _uiState.value = _uiState.value.copy(shouldShare = false)
   }
 }

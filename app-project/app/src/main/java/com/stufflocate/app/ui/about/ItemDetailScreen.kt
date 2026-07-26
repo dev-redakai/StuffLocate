@@ -51,10 +51,16 @@ fun ItemDetailScreen(
   val scope = rememberCoroutineScope()
 
   var item by remember { mutableStateOf<Item?>(null) }
+  var notFound by remember { mutableStateOf(false) }
   var showFullPhoto by remember { mutableStateOf<String?>(null) }
 
   LaunchedEffect(itemId) {
-    item = ServiceLocator.getRepository().getItemById(itemId)
+    val result = ServiceLocator.getRepository().getItemById(itemId)
+    if (result != null) {
+      item = result
+    } else {
+      notFound = true
+    }
   }
 
   Scaffold(
@@ -76,7 +82,23 @@ fun ItemDetailScreen(
       )
     },
   ) { padding ->
-    if (item == null) {
+    if (notFound) {
+      Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+          Icon(Icons.Default.ErrorOutline, contentDescription = null,
+            tint = onSurfaceVariantColor.copy(alpha = 0.4f), modifier = Modifier.size(48.dp))
+          Spacer(Modifier.height(12.dp))
+          Text("Item not found", style = MaterialTheme.typography.titleMedium,
+            color = onSurfaceColor, fontWeight = FontWeight.SemiBold)
+          Text("This item may have been deleted.", style = MaterialTheme.typography.bodySmall,
+            color = onSurfaceVariantColor)
+          Spacer(Modifier.height(16.dp))
+          Button(onClick = onBack, shape = RoundedCornerShape(12.dp)) {
+            Text("Go Back")
+          }
+        }
+      }
+    } else if (item == null) {
       Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(color = primaryColor)
       }

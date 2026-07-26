@@ -12,6 +12,7 @@ data class CreateFloorUiState(
   val name: String = "",
   val floorNumber: Int = 0,
   val isSaving: Boolean = false,
+  val saved: Boolean = false,
 )
 
 class CreateFloorViewModel(
@@ -32,7 +33,10 @@ class CreateFloorViewModel(
       _uiState.value = state.copy(isSaving = true)
       try {
         repository.createFloor(homeId, state.name, state.floorNumber)
-      } catch (_: Exception) { }
+        _uiState.value = _uiState.value.copy(isSaving = false, saved = true)
+      } catch (_: Exception) {
+        _uiState.value = _uiState.value.copy(isSaving = false)
+      }
     }
   }
 }

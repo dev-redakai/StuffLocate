@@ -12,6 +12,7 @@ data class CreateHomeUiState(
   val name: String = "",
   val address: String? = null,
   val isSaving: Boolean = false,
+  val saved: Boolean = false,
 )
 
 class CreateHomeViewModel(
@@ -32,7 +33,10 @@ class CreateHomeViewModel(
       _uiState.value = state.copy(isSaving = true)
       try {
         repository.createHome(state.name, state.address)
-      } catch (_: Exception) { }
+        _uiState.value = _uiState.value.copy(isSaving = false, saved = true)
+      } catch (_: Exception) {
+        _uiState.value = _uiState.value.copy(isSaving = false)
+      }
     }
   }
 }

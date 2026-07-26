@@ -28,6 +28,8 @@ fun CreateHomeScreen(
 ) {
   val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+  LaunchedEffect(state.saved) { if (state.saved) onSaved() }
+
   Scaffold(
     topBar = {
       TopAppBar(
@@ -67,7 +69,7 @@ fun CreateHomeScreen(
       Spacer(Modifier.weight(1f))
 
       Button(
-        onClick = { viewModel.save(); onSaved() },
+        onClick = { viewModel.save() },
         modifier = Modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(14.dp),
         enabled = state.name.isNotBlank(),

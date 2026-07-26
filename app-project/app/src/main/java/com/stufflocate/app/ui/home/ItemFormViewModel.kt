@@ -134,19 +134,23 @@ class ItemFormViewModel(
   }
 
   fun addPhoto(uri: Uri, isLocationPhoto: Boolean) {
-    val context = getApplication<Application>()
-    val dirName = if (isLocationPhoto) "location_photos" else "item_photos"
-    val path = PhotoManager.savePhoto(context, uri, dirName) ?: return
+    viewModelScope.launch {
+      val context = getApplication<Application>()
+      val dirName = if (isLocationPhoto) "location_photos" else "item_photos"
+      val path = with(kotlinx.coroutines.Dispatchers.IO) {
+        PhotoManager.savePhoto(context, uri, dirName)
+      } ?: return@launch
 
-    if (isLocationPhoto) {
-      val current = _uiState.value.locationPhotoPaths
-      if (current.size < 3) {
-        _uiState.value = _uiState.value.copy(locationPhotoPaths = current + path)
-      }
-    } else {
-      val current = _uiState.value.imagePaths
-      if (current.size < 5) {
-        _uiState.value = _uiState.value.copy(imagePaths = current + path)
+      if (isLocationPhoto) {
+        val current = _uiState.value.locationPhotoPaths
+        if (current.size < 3) {
+          _uiState.value = _uiState.value.copy(locationPhotoPaths = current + path)
+        }
+      } else {
+        val current = _uiState.value.imagePaths
+        if (current.size < 5) {
+          _uiState.value = _uiState.value.copy(imagePaths = current + path)
+        }
       }
     }
   }
@@ -232,16 +236,15 @@ class ItemFormViewModel(
             notes = state.notes,
             tags = state.tags,
           )
-          // Update with photos after creation
-          if (state.imagePaths.isNotEmpty() || state.locationPhotoPaths.isNotEmpty()) {
-            repository.updateItem(
-              item.copy(
-                imagePaths = state.imagePaths,
-                locationPhotoPaths = state.locationPhotoPaths,
-                locationDescription = state.locationDescription,
-              )
+          // Update with photos and status after creation
+          repository.updateItem(
+            item.copy(
+              status = state.status,
+              imagePaths = state.imagePaths,
+              locationPhotoPaths = state.locationPhotoPaths,
+              locationDescription = state.locationDescription,
             )
-          }
+          )
         }
         _uiState.value = _uiState.value.copy(isSaving = false, saved = true)
       } catch (_: Exception) {
