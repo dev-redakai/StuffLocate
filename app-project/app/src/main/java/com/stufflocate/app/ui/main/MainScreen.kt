@@ -53,13 +53,13 @@ fun MainScreen(
 ) {
   val state by viewModel.uiState.collectAsStateWithLifecycle()
   val theme = LocalAppTheme.current
-  val primaryColor = Color(theme.colors.primary)
-  val surfaceColor = Color(theme.colors.surface)
-  val onSurfaceColor = Color(theme.colors.onSurface)
-  val onSurfaceVariantColor = Color(theme.colors.onSurfaceVariant)
-  val secondaryColor = Color(theme.colors.secondary)
-  val tertiaryColor = Color(theme.colors.tertiary)
-  val backgroundColor = Color(theme.colors.background)
+  val primaryColor = remember(theme) { Color(theme.colors.primary) }
+  val surfaceColor = remember(theme) { Color(theme.colors.surface) }
+  val onSurfaceColor = remember(theme) { Color(theme.colors.onSurface) }
+  val onSurfaceVariantColor = remember(theme) { Color(theme.colors.onSurfaceVariant) }
+  val secondaryColor = remember(theme) { Color(theme.colors.secondary) }
+  val tertiaryColor = remember(theme) { Color(theme.colors.tertiary) }
+  val backgroundColor = remember(theme) { Color(theme.colors.background) }
   val drawerState = rememberDrawerState(DrawerValue.Closed)
   val scope = rememberCoroutineScope()
   val themeManager = remember { ServiceLocator.getAppThemeManager() }
@@ -210,9 +210,8 @@ private fun GlassDrawerItem(
   theme: AppTheme,
   onClick: () -> Unit,
 ) {
-  val primaryColor = Color(theme.colors.primary)
-  val onSurfaceColor = Color(theme.colors.onSurface)
-  val onSurfaceVariantColor = Color(theme.colors.onSurfaceVariant)
+  val primaryColor = remember(theme) { Color(theme.colors.primary) }
+  val onSurfaceVariantColor = remember(theme) { Color(theme.colors.onSurfaceVariant) }
 
   Surface(
     onClick = onClick,

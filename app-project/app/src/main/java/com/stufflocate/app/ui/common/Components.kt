@@ -332,15 +332,12 @@ fun SwipeableItemCard(
   val dismissState = rememberSwipeToDismissBoxState(
     confirmValueChange = { value ->
       when (value) {
-        SwipeToDismissBoxValue.StartToEnd -> {
-          onEdit()
-          false // Don't actually dismiss, just trigger action
-        }
         SwipeToDismissBoxValue.EndToStart -> {
           onDelete()
           false
         }
         SwipeToDismissBoxValue.Settled -> true
+        else -> false
       }
     },
   )
@@ -354,15 +351,13 @@ fun SwipeableItemCard(
           .fillMaxSize()
           .background(
             when (dismissState.targetValue) {
-              SwipeToDismissBoxValue.StartToEnd -> IOSColors.Primary
               SwipeToDismissBoxValue.EndToStart -> IOSColors.Red
-              SwipeToDismissBoxValue.Settled -> Color.Transparent
+              else -> Color.Transparent
             },
           )
           .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
-        // Start (right-swipe reveals Edit on the right side)
         if (dismissState.targetValue == SwipeToDismissBoxValue.EndToStart) {
           Spacer(Modifier.weight(1f))
           Icon(Icons.Default.Delete, contentDescription = "Delete",
@@ -370,17 +365,9 @@ fun SwipeableItemCard(
           Spacer(Modifier.width(8.dp))
           Text("Delete", color = Color.White, fontWeight = FontWeight.SemiBold)
         }
-        // End (left-swipe reveals Edit on the left side)
-        if (dismissState.targetValue == SwipeToDismissBoxValue.StartToEnd) {
-          Icon(Icons.Default.Edit, contentDescription = "Edit",
-            tint = Color.White, modifier = Modifier.size(24.dp))
-          Spacer(Modifier.width(8.dp))
-          Text("Edit", color = Color.White, fontWeight = FontWeight.SemiBold)
-          Spacer(Modifier.weight(1f))
-        }
       }
     },
-    enableDismissFromStartToEnd = true,
+    enableDismissFromStartToEnd = false,
     enableDismissFromEndToStart = true,
     content = {
       if (onTap != null) {

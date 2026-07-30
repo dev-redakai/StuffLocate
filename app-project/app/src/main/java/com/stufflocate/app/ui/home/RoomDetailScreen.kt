@@ -216,13 +216,13 @@ private fun ItemCard(
             modifier = Modifier.size(16.dp))
           Spacer(Modifier.width(4.dp))
         }
-        IconButton(onClick = onEdit, modifier = Modifier.size(32.dp)) {
+        IconButton(onClick = onEdit, modifier = Modifier.size(44.dp)) {
           Icon(Icons.Default.Edit, contentDescription = "Edit item",
-            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f), modifier = Modifier.size(18.dp))
+            tint = IOSColors.Primary, modifier = Modifier.size(20.dp))
         }
-        IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
+        IconButton(onClick = onDelete, modifier = Modifier.size(44.dp)) {
           Icon(Icons.Default.Delete, contentDescription = "Delete",
-            tint = IOSColors.Red.copy(alpha = 0.5f), modifier = Modifier.size(18.dp))
+            tint = IOSColors.Red, modifier = Modifier.size(20.dp))
         }
       }
     }

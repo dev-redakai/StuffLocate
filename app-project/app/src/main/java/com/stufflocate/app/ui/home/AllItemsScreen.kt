@@ -144,9 +144,9 @@ private fun AllItemsCard(
             StatusDropdown(currentStatus = item.status, onStatusChange = onStatusChange)
           }
         }
-        IconButton(onClick = onEdit, modifier = Modifier.size(32.dp)) {
+        IconButton(onClick = onEdit, modifier = Modifier.size(44.dp)) {
           Icon(Icons.Default.Edit, contentDescription = "Edit item",
-            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f), modifier = Modifier.size(18.dp))
+            tint = IOSColors.Primary, modifier = Modifier.size(20.dp))
         }
       }
     }

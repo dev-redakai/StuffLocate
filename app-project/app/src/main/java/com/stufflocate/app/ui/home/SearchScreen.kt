@@ -167,7 +167,6 @@ private fun SearchResultItem(
     modifier = modifier,
   ) {
     Card(
-      onClick = onClick,
       modifier = Modifier.fillMaxWidth(),
       shape = RoundedCornerShape(16.dp),
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -231,8 +230,8 @@ private fun SearchResultItem(
           }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-          IconButton(onClick = onEdit, modifier = Modifier.size(32.dp)) {
-            Icon(Icons.Default.Edit, contentDescription = "Edit item", tint = IOSColors.Primary, modifier = Modifier.size(18.dp))
+          IconButton(onClick = onEdit, modifier = Modifier.size(44.dp)) {
+            Icon(Icons.Default.Edit, contentDescription = "Edit item", tint = IOSColors.Primary, modifier = Modifier.size(20.dp))
           }
           Icon(Icons.Default.ChevronRight, contentDescription = "Go to room",
             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f), modifier = Modifier.size(20.dp))

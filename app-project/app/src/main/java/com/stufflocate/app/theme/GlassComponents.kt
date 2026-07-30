@@ -48,51 +48,55 @@ fun LiquidGlassCard(
   val surfaceColor = Color(theme.colors.surface)
 
   val shape = RoundedCornerShape(cornerRadius)
-  val glassBrush = when (theme.glass.style) {
-    GlassStyle.LIQUID -> Brush.verticalGradient(
-      colors = listOf(
-        surfaceColor.copy(alpha = alpha + 0.1f),
-        surfaceColor.copy(alpha = alpha),
-        primaryColor.copy(alpha = theme.glass.tintStrength),
+  val glassBrush = remember(theme.glass.style, primaryColor, surfaceColor, alpha, theme.glass.tintStrength, theme.colors.secondary, theme.colors.tertiary) {
+    when (theme.glass.style) {
+      GlassStyle.LIQUID -> Brush.verticalGradient(
+        colors = listOf(
+          surfaceColor.copy(alpha = alpha + 0.1f),
+          surfaceColor.copy(alpha = alpha),
+          primaryColor.copy(alpha = theme.glass.tintStrength),
+        )
       )
-    )
-    GlassStyle.FROSTED -> Brush.linearGradient(
-      colors = listOf(
-        Color.White.copy(alpha = alpha * 0.8f),
-        surfaceColor.copy(alpha = alpha * 0.6f),
-        Color.White.copy(alpha = alpha * 0.7f),
+      GlassStyle.FROSTED -> Brush.linearGradient(
+        colors = listOf(
+          Color.White.copy(alpha = alpha * 0.8f),
+          surfaceColor.copy(alpha = alpha * 0.6f),
+          Color.White.copy(alpha = alpha * 0.7f),
+        )
       )
-    )
-    GlassStyle.AURORA -> Brush.sweepGradient(
-      colors = listOf(
-        primaryColor.copy(alpha = 0.15f),
-        Color(theme.colors.secondary).copy(alpha = 0.1f),
-        Color(theme.colors.tertiary).copy(alpha = 0.12f),
-        primaryColor.copy(alpha = 0.15f),
+      GlassStyle.AURORA -> Brush.sweepGradient(
+        colors = listOf(
+          primaryColor.copy(alpha = 0.15f),
+          Color(theme.colors.secondary).copy(alpha = 0.1f),
+          Color(theme.colors.tertiary).copy(alpha = 0.12f),
+          primaryColor.copy(alpha = 0.15f),
+        )
       )
-    )
-    GlassStyle.NEON -> Brush.verticalGradient(
-      colors = listOf(
-        primaryColor.copy(alpha = 0.12f),
-        surfaceColor.copy(alpha = alpha * 0.5f),
-        primaryColor.copy(alpha = 0.08f),
+      GlassStyle.NEON -> Brush.verticalGradient(
+        colors = listOf(
+          primaryColor.copy(alpha = 0.12f),
+          surfaceColor.copy(alpha = alpha * 0.5f),
+          primaryColor.copy(alpha = 0.08f),
+        )
       )
-    )
-    GlassStyle.MINIMAL -> Brush.verticalGradient(
+      GlassStyle.MINIMAL -> Brush.verticalGradient(
+        colors = listOf(
+          surfaceColor.copy(alpha = alpha + 0.05f),
+          surfaceColor.copy(alpha = alpha),
+        )
+      )
+    }
+  }
+
+  val borderBrush = remember(primaryColor, borderAlpha) {
+    Brush.linearGradient(
       colors = listOf(
-        surfaceColor.copy(alpha = alpha + 0.05f),
-        surfaceColor.copy(alpha = alpha),
+        Color.White.copy(alpha = borderAlpha),
+        primaryColor.copy(alpha = borderAlpha * 0.5f),
+        Color.White.copy(alpha = borderAlpha * 0.3f),
       )
     )
   }
-
-  val borderBrush = Brush.linearGradient(
-    colors = listOf(
-      Color.White.copy(alpha = borderAlpha),
-      primaryColor.copy(alpha = borderAlpha * 0.5f),
-      Color.White.copy(alpha = borderAlpha * 0.3f),
-    )
-  )
 
   val clickableModifier = if (onClick != null) {
     Modifier.clickable(
@@ -146,19 +150,21 @@ fun LiquidGlassButton(
 
   val shape = RoundedCornerShape(16.dp)
 
-  val brush = when (style) {
-    ButtonStyle.FILLED -> Brush.horizontalGradient(
-      colors = listOf(primaryColor, primaryColor.copy(alpha = 0.8f))
-    )
-    ButtonStyle.GLASS -> Brush.verticalGradient(
-      colors = listOf(
-        surfaceColor.copy(alpha = theme.glass.alpha),
-        surfaceColor.copy(alpha = theme.glass.alpha * 0.8f),
+  val brush = remember(style, primaryColor, onPrimaryColor, surfaceColor, theme.glass.alpha) {
+    when (style) {
+      ButtonStyle.FILLED -> Brush.horizontalGradient(
+        colors = listOf(primaryColor, primaryColor.copy(alpha = 0.8f))
       )
-    )
-    ButtonStyle.OUTLINE -> Brush.linearGradient(
-      colors = listOf(Color.Transparent, Color.Transparent)
-    )
+      ButtonStyle.GLASS -> Brush.verticalGradient(
+        colors = listOf(
+          surfaceColor.copy(alpha = theme.glass.alpha),
+          surfaceColor.copy(alpha = theme.glass.alpha * 0.8f),
+        )
+      )
+      ButtonStyle.OUTLINE -> Brush.linearGradient(
+        colors = listOf(Color.Transparent, Color.Transparent)
+      )
+    }
   }
 
   val textColor = when (style) {
@@ -262,6 +268,25 @@ fun LiquidGlassBottomBar(
   val surfaceColor = Color(theme.colors.surface)
   val primaryColor = Color(theme.colors.primary)
 
+  val bgBrush = remember(surfaceColor, theme.glass.alpha) {
+    Brush.verticalGradient(
+      colors = listOf(
+        surfaceColor.copy(alpha = theme.glass.alpha + 0.1f),
+        surfaceColor.copy(alpha = theme.glass.alpha),
+      )
+    )
+  }
+
+  val borderBrushGradient = remember(primaryColor, theme.glass.borderAlpha) {
+    Brush.horizontalGradient(
+      colors = listOf(
+        Color.White.copy(alpha = theme.glass.borderAlpha),
+        primaryColor.copy(alpha = theme.glass.borderAlpha * 0.3f),
+        Color.White.copy(alpha = theme.glass.borderAlpha),
+      )
+    )
+  }
+
   Surface(
     modifier = modifier,
     shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
@@ -272,26 +297,8 @@ fun LiquidGlassBottomBar(
     Row(
       modifier = Modifier
         .fillMaxWidth()
-        .background(
-          Brush.verticalGradient(
-            colors = listOf(
-              surfaceColor.copy(alpha = theme.glass.alpha + 0.1f),
-              surfaceColor.copy(alpha = theme.glass.alpha),
-            )
-          ),
-          RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        )
-        .border(
-          1.dp,
-          Brush.horizontalGradient(
-            colors = listOf(
-              Color.White.copy(alpha = theme.glass.borderAlpha),
-              primaryColor.copy(alpha = theme.glass.borderAlpha * 0.3f),
-              Color.White.copy(alpha = theme.glass.borderAlpha),
-            )
-          ),
-          RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-        )
+        .background(bgBrush, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+        .border(1.dp, borderBrushGradient, RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
         .padding(horizontal = 16.dp, vertical = 12.dp),
       horizontalArrangement = Arrangement.SpaceEvenly,
       content = content,
@@ -348,27 +355,21 @@ fun LiquidGlassChip(
   val isPressed by interactionSource.collectIsPressedAsState()
   val scale by animateFloatAsState(if (isPressed) 0.95f else 1f, spring(dampingRatio = Spring.DampingRatioMediumBouncy))
 
+  val selectedBorderBrush = remember(primaryColor) {
+    Brush.linearGradient(listOf(primaryColor.copy(alpha = 0.5f), primaryColor.copy(alpha = 0.3f)))
+  }
+  val defaultBorderBrush = remember(theme.colors.outline) {
+    Brush.linearGradient(listOf(Color(theme.colors.outline).copy(alpha = 0.5f), Color(theme.colors.outline).copy(alpha = 0.3f)))
+  }
+
   Surface(
     onClick = onClick,
     modifier = modifier.scale(scale),
     shape = shape,
     color = if (selected) primaryColor.copy(alpha = 0.15f) else surfaceColor.copy(alpha = theme.glass.alpha),
-    border = if (selected) {
-      ButtonDefaults.outlinedButtonBorder(enabled = true).copy(
-        brush = Brush.linearGradient(
-          colors = listOf(primaryColor.copy(alpha = 0.5f), primaryColor.copy(alpha = 0.3f))
-        )
-      )
-    } else {
-      ButtonDefaults.outlinedButtonBorder(enabled = true).copy(
-        brush = Brush.linearGradient(
-          colors = listOf(
-            Color(theme.colors.outline).copy(alpha = 0.5f),
-            Color(theme.colors.outline).copy(alpha = 0.3f),
-          )
-        )
-      )
-    },
+    border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(
+      brush = if (selected) selectedBorderBrush else defaultBorderBrush
+    ),
     interactionSource = interactionSource,
   ) {
     Row(
@@ -397,6 +398,25 @@ fun LiquidGlassSurface(
   val surfaceColor = Color(theme.colors.surface)
   val primaryColor = Color(theme.colors.primary)
 
+  val bgBrush = remember(surfaceColor, primaryColor, theme.glass.alpha, theme.glass.tintStrength) {
+    Brush.verticalGradient(
+      colors = listOf(
+        surfaceColor.copy(alpha = theme.glass.alpha + 0.1f),
+        surfaceColor.copy(alpha = theme.glass.alpha),
+        primaryColor.copy(alpha = theme.glass.tintStrength),
+      )
+    )
+  }
+
+  val borderBrush = remember(primaryColor, theme.glass.borderAlpha) {
+    Brush.linearGradient(
+      colors = listOf(
+        Color.White.copy(alpha = theme.glass.borderAlpha),
+        primaryColor.copy(alpha = theme.glass.borderAlpha * 0.3f),
+      )
+    )
+  }
+
   Surface(
     modifier = modifier,
     shape = shape,
@@ -406,26 +426,8 @@ fun LiquidGlassSurface(
   ) {
     Box(
       modifier = Modifier
-        .background(
-          Brush.verticalGradient(
-            colors = listOf(
-              surfaceColor.copy(alpha = theme.glass.alpha + 0.1f),
-              surfaceColor.copy(alpha = theme.glass.alpha),
-              primaryColor.copy(alpha = theme.glass.tintStrength),
-            )
-          ),
-          shape,
-        )
-        .border(
-          1.dp,
-          Brush.linearGradient(
-            colors = listOf(
-              Color.White.copy(alpha = theme.glass.borderAlpha),
-              primaryColor.copy(alpha = theme.glass.borderAlpha * 0.3f),
-            )
-          ),
-          shape,
-        ),
+        .background(bgBrush, shape)
+        .border(1.dp, borderBrush, shape),
     ) {
       content()
     }
