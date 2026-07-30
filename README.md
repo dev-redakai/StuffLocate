@@ -1,7 +1,4 @@
 <h1 align="center">
-  <br/>
-  <img src="https://raw.githubusercontent.com/dev-redakai/StuffLocate/master/screenshots/dashboard.png" width="220" alt="Stuff Locate"/>
-  <br/>
   Stuff Locate
   <br/>
 </h1>
@@ -266,3 +263,4 @@ limitations under the License.
 <p align="center">
   Made with ❤️ by <a href="https://github.com/dev-redakai">Manikant Goutam</a>
 </p>
+
