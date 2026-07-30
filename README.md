@@ -1,11 +1,3 @@
-<p align="center">
-  <img src="screenshots/dashboard.png" width="280" />
-  &nbsp;&nbsp;
-  <img src="screenshots/drawer.png" width="280" />
-  &nbsp;&nbsp;
-  <img src="screenshots/home_detail.png" width="280" />
-</p>
-
 <h1 align="center">Stuff Locate</h1>
 
 <p align="center">
@@ -23,25 +15,21 @@
   <img src="https://img.shields.io/badge/Target%20SDK-36-blueviolet?style=flat-square" alt="Target SDK" />
 </p>
 
----
-
-## Screenshots
-
 <p align="center">
-  <img src="screenshots/dashboard.png" width="250" />
+  <img src="screenshots/dashboard.png" width="240" />
   &nbsp;&nbsp;
-  <img src="screenshots/drawer.png" width="250" />
+  <img src="screenshots/drawer.png" width="240" />
   &nbsp;&nbsp;
-  <img src="screenshots/search.png" width="250" />
+  <img src="screenshots/search.png" width="240" />
 </p>
 <p align="center">
   <em>Dashboard &nbsp;&bull;&nbsp; Navigation Drawer &nbsp;&bull;&nbsp; Smart Search</em>
 </p>
 
 <p align="center">
-  <img src="screenshots/home_detail.png" width="250" />
+  <img src="screenshots/home_detail.png" width="240" />
   &nbsp;&nbsp;
-  <img src="screenshots/room_detail.png" width="250" />
+  <img src="screenshots/room_detail.png" width="240" />
 </p>
 <p align="center">
   <em>Home Detail &nbsp;&bull;&nbsp; Room Items</em>
